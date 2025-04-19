@@ -1,3 +1,5 @@
+"""Parse tools for OpenAI tools output."""
+
 import copy
 import json
 from json import JSONDecodeError
@@ -64,7 +66,7 @@ def parse_tool_call(
     }
     if return_id:
         parsed["id"] = raw_tool_call.get("id")
-        parsed = create_tool_call(**parsed)  # type: ignore
+        parsed = create_tool_call(**parsed)  # type: ignore[assignment,arg-type]
     return parsed
 
 
@@ -168,7 +170,6 @@ class JsonOutputToolsParser(BaseCumulativeTransformOutputParser[Any]):
         Raises:
             OutputParserException: If the output is not valid JSON.
         """
-
         generation = result[0]
         if not isinstance(generation, ChatGeneration):
             msg = "This output parser can only be used with a chat generation."
@@ -240,10 +241,9 @@ class JsonOutputKeyToolsParser(JsonOutputToolsParser):
             )
             if self.return_id:
                 return single_result
-            elif single_result:
+            if single_result:
                 return single_result["args"]
-            else:
-                return None
+            return None
         parsed_result = [res for res in parsed_result if res["type"] == self.key_name]
         if not self.return_id:
             parsed_result = [res["args"] for res in parsed_result]
@@ -283,20 +283,20 @@ class PydanticToolsParser(JsonOutputToolsParser):
         name_dict = {tool.__name__: tool for tool in self.tools}
         pydantic_objects = []
         for res in json_results:
-            try:
-                if not isinstance(res["args"], dict):
-                    msg = (
-                        f"Tool arguments must be specified as a dict, received: "
-                        f"{res['args']}"
-                    )
-                    raise ValueError(msg)
-                pydantic_objects.append(name_dict[res["type"]](**res["args"]))
-            except (ValidationError, ValueError) as e:
+            if not isinstance(res["args"], dict):
                 if partial:
                     continue
-                else:
-                    raise e
+                msg = (
+                    f"Tool arguments must be specified as a dict, received: "
+                    f"{res['args']}"
+                )
+                raise ValueError(msg)
+            try:
+                pydantic_objects.append(name_dict[res["type"]](**res["args"]))
+            except (ValidationError, ValueError):
+                if partial:
+                    continue
+                raise
         if self.first_tool_only:
             return pydantic_objects[0] if pydantic_objects else None
-        else:
-            return pydantic_objects
+        return pydantic_objects

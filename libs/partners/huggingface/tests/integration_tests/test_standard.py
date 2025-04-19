@@ -1,7 +1,5 @@
 """Standard LangChain interface tests"""
 
-from typing import Type
-
 import pytest
 from langchain_core.language_models import BaseChatModel
 from langchain_core.tools import BaseTool
@@ -12,7 +10,7 @@ from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 
 class TestHuggingFaceEndpoint(ChatModelIntegrationTests):
     @property
-    def chat_model_class(self) -> Type[BaseChatModel]:
+    def chat_model_class(self) -> type[BaseChatModel]:
         return ChatHuggingFace
 
     @property
@@ -67,12 +65,14 @@ class TestHuggingFaceEndpoint(ChatModelIntegrationTests):
         super().test_bind_runnables_as_tools(model)
 
     @pytest.mark.xfail(reason=("Not implemented"))
-    def test_structured_output(self, model: BaseChatModel) -> None:
-        super().test_structured_output(model)
+    def test_structured_output(self, model: BaseChatModel, schema_type: str) -> None:
+        super().test_structured_output(model, schema_type)
 
     @pytest.mark.xfail(reason=("Not implemented"))
-    def test_structured_output_async(self, model: BaseChatModel) -> None:  # type: ignore[override]
-        super().test_structured_output(model)
+    async def test_structured_output_async(
+        self, model: BaseChatModel, schema_type: str
+    ) -> None:  # type: ignore[override]
+        super().test_structured_output(model, schema_type)
 
     @pytest.mark.xfail(reason=("Not implemented"))
     def test_structured_output_pydantic_2_v1(self, model: BaseChatModel) -> None:

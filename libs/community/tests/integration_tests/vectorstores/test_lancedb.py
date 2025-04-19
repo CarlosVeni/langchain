@@ -112,8 +112,8 @@ def test_lancedb_all_searches() -> None:
     result_3 = store.similarity_search_by_vector_with_relevance_scores(
         embeddings.embed_query("text 1")
     )
-    assert len(result_3[0]) == 2  # type: ignore
-    assert "text 1" in result_3[0][0].page_content  # type: ignore
+    assert len(result_3[0]) == 2
+    assert "text 1" in result_3[0][0].page_content
 
 
 @pytest.mark.requires("lancedb")
@@ -147,8 +147,8 @@ def test_lancedb_no_metadata() -> None:
     result = store.similarity_search("text 1")
     # Verify that the metadata in the Document objects is an empty dictionary
     for doc in result:
-        assert (
-            doc.metadata == {}
-        ), "Expected empty metadata when 'metadata' column is missing"
+        assert doc.metadata == {}, (
+            "Expected empty metadata when 'metadata' column is missing"
+        )
     # Clean up by deleting the table (optional)
     db.drop_table("vectorstore_no_metadata")

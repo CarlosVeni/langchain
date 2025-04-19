@@ -10,11 +10,12 @@ try:
 
     class Base(DeclarativeBase):
         pass
+
 except ImportError:
     # for sqlalchemy < 2
     from sqlalchemy.ext.declarative import declarative_base
 
-    Base = declarative_base()  # type:ignore
+    Base = declarative_base()  # type:ignore[misc]
 
 from langchain_community.chat_message_histories import SQLChatMessageHistory
 from langchain_community.chat_message_histories.sql import DefaultMessageConverter
@@ -81,7 +82,10 @@ def test_add_messages(
 ) -> None:
     sql_history, other_history = sql_histories
     sql_history.add_messages(
-        [HumanMessage(content="Hello!"), AIMessage(content="Hi there!")]
+        [
+            HumanMessage(content="Hello!"),
+            AIMessage(content="Hi there!"),
+        ]
     )
 
     messages = sql_history.messages
@@ -98,7 +102,10 @@ async def test_async_add_messages(
 ) -> None:
     sql_history, other_history = asql_histories
     await sql_history.aadd_messages(
-        [HumanMessage(content="Hello!"), AIMessage(content="Hi there!")]
+        [
+            HumanMessage(content="Hello!"),
+            AIMessage(content="Hi there!"),
+        ]
     )
 
     messages = await sql_history.aget_messages()
@@ -175,7 +182,10 @@ def test_clear_messages(
 ) -> None:
     sql_history, other_history = sql_histories
     sql_history.add_messages(
-        [HumanMessage(content="Hello!"), AIMessage(content="Hi there!")]
+        [
+            HumanMessage(content="Hello!"),
+            AIMessage(content="Hi there!"),
+        ]
     )
     assert len(sql_history.messages) == 2
     # Now create another history with different session id
@@ -194,7 +204,10 @@ async def test_async_clear_messages(
 ) -> None:
     sql_history, other_history = asql_histories
     await sql_history.aadd_messages(
-        [HumanMessage(content="Hello!"), AIMessage(content="Hi there!")]
+        [
+            HumanMessage(content="Hello!"),
+            AIMessage(content="Hi there!"),
+        ]
     )
     assert len(await sql_history.aget_messages()) == 2
     # Now create another history with different session id

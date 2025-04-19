@@ -22,13 +22,11 @@ from langchain_community.embeddings import FakeEmbeddings
 
 
 @pytest.fixture
-def init_weaviate() -> (
-    Generator[
-        Tuple[WeaviateDocumentIndex, Dict[str, Any], FakeEmbeddings],
-        None,
-        None,
-    ]
-):
+def init_weaviate() -> Generator[
+    Tuple[WeaviateDocumentIndex, Dict[str, Any], FakeEmbeddings],
+    None,
+    None,
+]:
     """
     cd tests/integration_tests/vectorstores/docker-compose
     docker compose -f weaviate.yml up
@@ -42,8 +40,8 @@ def init_weaviate() -> (
         # When initializing the Weaviate index, denote the field
         # you want to search on with `is_embedding=True`
         title: str
-        title_embedding: NdArray[32] = Field(is_embedding=True)  # type: ignore
-        other_emb: NdArray[32]  # type: ignore
+        title_embedding: NdArray[32] = Field(is_embedding=True)  # type: ignore[call-overload]
+        other_emb: NdArray[32]
         year: int
 
     embeddings = FakeEmbeddings(size=32)
@@ -75,9 +73,9 @@ def init_weaviate() -> (
 
 
 @pytest.fixture
-def init_elastic() -> (
-    Generator[Tuple[ElasticDocIndex, Dict[str, Any], FakeEmbeddings], None, None]
-):
+def init_elastic() -> Generator[
+    Tuple[ElasticDocIndex, Dict[str, Any], FakeEmbeddings], None, None
+]:
     """
     cd tests/integration_tests/vectorstores/docker-compose
     docker-compose -f elasticsearch.yml up
@@ -89,8 +87,8 @@ def init_elastic() -> (
 
     class MyDoc(BaseDoc):
         title: str
-        title_embedding: NdArray[32]  # type: ignore
-        other_emb: NdArray[32]  # type: ignore
+        title_embedding: NdArray[32]
+        other_emb: NdArray[32]
         year: int
 
     embeddings = FakeEmbeddings(size=32)
@@ -126,8 +124,8 @@ def init_qdrant() -> Tuple[QdrantDocumentIndex, rest.Filter, FakeEmbeddings]:
 
     class MyDoc(BaseDoc):
         title: str
-        title_embedding: NdArray[32]  # type: ignore
-        other_emb: NdArray[32]  # type: ignore
+        title_embedding: NdArray[32]
+        other_emb: NdArray[32]
         year: int
 
     embeddings = FakeEmbeddings(size=32)
@@ -170,8 +168,8 @@ def init_in_memory() -> Tuple[InMemoryExactNNIndex, Dict[str, Any], FakeEmbeddin
 
     class MyDoc(BaseDoc):
         title: str
-        title_embedding: NdArray[32]  # type: ignore
-        other_emb: NdArray[32]  # type: ignore
+        title_embedding: NdArray[32]
+        other_emb: NdArray[32]
         year: int
 
     embeddings = FakeEmbeddings(size=32)
@@ -207,8 +205,8 @@ def init_hnsw(
 
     class MyDoc(BaseDoc):
         title: str
-        title_embedding: NdArray[32]  # type: ignore
-        other_emb: NdArray[32]  # type: ignore
+        title_embedding: NdArray[32]
+        other_emb: NdArray[32]
         year: int
 
     embeddings = FakeEmbeddings(size=32)
